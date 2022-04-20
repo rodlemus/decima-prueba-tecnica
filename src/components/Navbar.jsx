@@ -1,4 +1,4 @@
-import { Search } from "@mui/icons-material";
+import { Cancel, Search } from "@mui/icons-material";
 import { AppBar, InputBase, Toolbar, Typography, Badge } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { alpha } from "@mui/material/styles";
@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
    
   },
+ 
 }));
 
 const Navbar = (props) => {
@@ -72,6 +73,9 @@ const Navbar = (props) => {
         <div className={classes.search}>
           <Search />
           <InputBase placeholder="Search" className={classes.input} />
+          <Box display={{ xs: 'block', sm:'block', md: 'none' }}>
+          <Cancel className={classes.cancel} onClick={()=>setOpen(false)}/>
+          </Box>
         </div>
        
         <div className={classes.icons}>
