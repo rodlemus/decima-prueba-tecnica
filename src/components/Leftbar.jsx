@@ -11,6 +11,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@material-ui/core";
+import { useNavigate } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(10),
@@ -52,24 +53,26 @@ const useStyles = makeStyles((theme) => ({
 
 const Leftbar = (props) => {
   const classes = useStyles();
+  const navigate = useNavigate();
+
   return (
     <Container className={classes.container}>
-      {/* <div className={classes.item}>
-        <WhatshotIcon className={classes.icon} />
-        <Typography className={classes.text}>Treding Gifs</Typography>
-      </div>
-      <div className={classes.item}>
-        <FavoriteIcon className={classes.icon} />
-        <Typography className={classes.text}>Saved Gifs</Typography>
-      </div> */}
       <List component="nav" aria-label="main gifs">
-        <ListItem button className={classes.item}>
+        <ListItem
+          button
+          className={classes.item}
+          onClick={() => navigate("/trending", { replace: true })}
+        >
           <ListItemIcon>
             <WhatshotIcon className={classes.icon} />
           </ListItemIcon>
           <ListItemText primary="Trending Gifs" className={classes.text} />
         </ListItem>
-        <ListItem button className={classes.item}>
+        <ListItem
+          button
+          className={classes.item}
+          onClick={() => navigate("/favorites", { replace: true })}
+        >
           <ListItemIcon>
             <FavoriteIcon className={classes.icon} />
           </ListItemIcon>

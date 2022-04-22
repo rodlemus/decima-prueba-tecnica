@@ -8,9 +8,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Cancel, Search } from "@material-ui/icons";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
+
 import { useState } from "react";
 const useStyles = makeStyles((theme) => ({
   logoLg: {
@@ -30,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-around",
   },
   search: {
+    display: "flex",
     alignItems: "center",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: alpha(theme.palette.common.white, 0.15),
@@ -39,10 +38,6 @@ const useStyles = makeStyles((theme) => ({
     width: "40%",
     [theme.breakpoints.down("sm")]: {
       display: (props) => (props.open ? "flex" : "none"),
-      width: "70%",
-    },
-    [theme.breakpoints.up("xl")]: {
-      display: "flex",
     },
   },
   input: {
@@ -92,12 +87,6 @@ const Navbar = (props) => {
             onClick={() => setOpen(true)}
             className={classes.searchButton}
           />
-          {/* <Typography variant="h6" className={classes.logoLg}>
-            Gifs Guardados
-          </Typography>
-          <Badge badgeContent={4} color="secondary">
-            <FavoriteIcon color="action" style={{ color: "white" }} />
-          </Badge> */}
         </div>
       </Toolbar>
     </AppBar>
