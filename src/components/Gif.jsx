@@ -84,7 +84,7 @@ export default function GifContainer({ query }) {
     } else {
       gf.trending({ offset, limit: gifsPerRequest })
         .then(({ data, pagination }) => {
-          console.log(pagination);
+          console.log(data);
           setTotalCount(pagination.total_count);
           setGifs(data);
         })
@@ -114,7 +114,7 @@ export default function GifContainer({ query }) {
     } else {
       gf.trending({ offset, limit: gifsPerRequest }).then(
         ({ data, pagination }) => {
-          console.log(pagination);
+          console.log(data);
           setTotalCount(pagination.total_count);
           setGifs(data);
         }
@@ -127,7 +127,7 @@ export default function GifContainer({ query }) {
         <div className={classes.root}>
           <ImageList className={classes.imageList} cols={4}>
             {gifs.map((item) => (
-              <ImageListItem key={item.url} className={classes.gifItem}>
+              <ImageListItem key={item.id} className={classes.gifItem}>
                 <img src={item.images.original.url} alt={item.title} />
                 <ImageListItemBar
                   className={classes.animation}
@@ -135,7 +135,12 @@ export default function GifContainer({ query }) {
                   subtitle={<span>by: {item.username}</span>}
                   actionIcon={
                     <div style={{ display: "flex" }}>
-                      <FavoriteButton />
+                      <FavoriteButton
+                        id={item.id}
+                        url={item.images.original.url}
+                        title={item.title}
+                        username={item.username}
+                      />
                       <CopyUrlButton
                         url={item.images.original.url}
                         iconStyle={classes.icon}
