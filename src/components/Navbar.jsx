@@ -10,10 +10,10 @@ import {
 import { Cancel, Search } from "@material-ui/icons";
 
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useMatch } from "react-router-dom";
 
 import Leftbar from "./Leftbar";
-import GifContainer from "./Gif";
+import GifContainer from "./GifContainer";
 import SavedGifs from "../pages/SavedGifs";
 const useStyles = makeStyles((theme) => ({
   logoLg: {
@@ -68,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Navbar = (props) => {
+  const match = useMatch("/favorites");
   const [open, setOpen] = useState(true);
   const [query, setQuery] = useState("");
   const classes = useStyles({ open });
@@ -84,15 +85,20 @@ const Navbar = (props) => {
           <Typography variant="h6" className={classes.logoSm}>
             Decima - PT
           </Typography>
-          <div className={classes.search}>
-            <Search />
-            <InputBase
-              placeholder="Search"
-              className={classes.input}
-              onChange={handleChange}
-            />
-            <Cancel className={classes.cancel} onClick={() => setOpen(false)} />
-          </div>
+          {!match && (
+            <div className={classes.search}>
+              <Search />
+              <InputBase
+                placeholder="Search"
+                className={classes.input}
+                onChange={handleChange}
+              />
+              <Cancel
+                className={classes.cancel}
+                onClick={() => setOpen(false)}
+              />
+            </div>
+          )}
 
           <div className={classes.icons}>
             <Search

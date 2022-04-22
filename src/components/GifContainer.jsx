@@ -9,6 +9,7 @@ import { Box } from "@material-ui/core";
 import FavoriteButton from "./FavoriteButton";
 import { GiphyFetch } from "@giphy/js-fetch-api";
 import CopyUrlButton from "./CopyUrlButton";
+import { localStorageKey } from "../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,9 +61,18 @@ export default function GifContainer({ query }) {
   const classes = useStyles();
   const [page, setPage] = useState(1);
   const [gifs, setGifs] = useState([]);
+  const [gifsSaved, setGifsSaved] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const gifsPerRequest = 20;
   const gf = new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY);
+
+  useEffect(() => {
+    const gifsSavedLocal =
+      localStorage.getItem(localStorageKey) === null
+        ? []
+        : JSON.parse(localStorage.getItem(localStorageKey));
+    setGifsSaved(gifsSavedLocal);
+  }, [gifs]);
 
   useEffect(() => {
     const factor = page === 1 ? page - 1 : page;
@@ -76,7 +86,6 @@ export default function GifContainer({ query }) {
         offset,
       })
         .then(({ data, pagination }) => {
-          console.log(data);
           setTotalCount(pagination.total_count);
           setGifs(data);
         })
@@ -84,7 +93,6 @@ export default function GifContainer({ query }) {
     } else {
       gf.trending({ offset, limit: gifsPerRequest })
         .then(({ data, pagination }) => {
-          console.log(data);
           setTotalCount(pagination.total_count);
           setGifs(data);
         })
@@ -140,6 +148,14 @@ export default function GifContainer({ query }) {
                         url={item.images.original.url}
                         title={item.title}
                         username={item.username}
+                        setSaved={() => {
+                          return gifsSaved.find((gif) => {
+                            console.log(gif.id === item.id);
+                            return gif.id === item.id;
+                          }) !== undefined
+                            ? true
+                            : false;
+                        }}
                       />
                       <CopyUrlButton
                         url={item.images.original.url}

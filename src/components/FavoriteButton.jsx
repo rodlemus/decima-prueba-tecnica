@@ -1,10 +1,13 @@
 import { IconButton } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { localStorageKey } from "../utils/constants";
 
-const FavoriteButton = ({ id, url, title, username }) => {
+const FavoriteButton = ({ id, url, title, username, deleteGif, setSaved }) => {
   const [favorite, setFavorite] = useState(false);
+  useEffect(() => {
+    setFavorite(setSaved);
+  }, []);
   const handleFavGif = ({ id, url, title, username }) => {
     const plainGifs = localStorage.getItem(localStorageKey);
     if (!favorite) {
@@ -22,6 +25,7 @@ const FavoriteButton = ({ id, url, title, username }) => {
       if (plainGifs !== null) {
         const gifsArray = JSON.parse(localStorage.getItem(localStorageKey));
         const gifsFiltered = gifsArray.filter((gif) => gif.id !== id);
+        deleteGif(gifsFiltered);
         localStorage.setItem(localStorageKey, JSON.stringify(gifsFiltered));
       }
     }
