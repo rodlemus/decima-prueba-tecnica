@@ -35,12 +35,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "60%",
     marginLeft: "36%",
   },
-  gifContainerItemsLg: {
+  gifContainerItems: {
     display: "flex",
     flexDirection: "column",
-    [theme.breakpoints.down("sm")]: {
-      display: "none",
-    },
   },
   animation: {
     transition: "0.3s",
@@ -64,16 +61,18 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TitlebarImageList() {
   const classes = useStyles();
-  const gifsPerRequest = 20;
   const [page, setPage] = useState(1);
   const [gifs, setGifs] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const gifsPerRequest = 20;
   const gf = new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY);
 
   useEffect(() => {
-    const variableOffset = page === 1 ? 0 : page;
-    gf.trending({ variableOffset, limit: gifsPerRequest })
+    const factor = page === 1 ? page - 1 : page;
+    const offset = factor * gifsPerRequest;
+    gf.trending({ offset, limit: gifsPerRequest })
       .then(({ data, pagination }) => {
+        console.log(pagination);
         setTotalCount(pagination.total_count);
         setGifs(data);
       })
@@ -81,11 +80,13 @@ export default function TitlebarImageList() {
   }, []);
 
   const handleChange = (event, value) => {
-    const offsetFactor = value === 1 ? 0 : value - 1;
-    const offset = offsetFactor * gifsPerRequest;
     setPage(value);
+
+    const offset = value === 1 ? 0 : value * gifsPerRequest;
+    console.log(offset);
     gf.trending({ offset, limit: gifsPerRequest })
       .then(({ data, pagination }) => {
+        console.log(pagination);
         setTotalCount(pagination.total_count);
         setGifs(data);
       })
@@ -93,7 +94,7 @@ export default function TitlebarImageList() {
   };
   return (
     <>
-      <Box className={classes.gifContainerItemsLg}>
+      <Box className={classes.gifContainerItems}>
         <div className={classes.root}>
           <ImageList className={classes.imageList} cols={4}>
             {gifs.map((item) => (
@@ -104,7 +105,7 @@ export default function TitlebarImageList() {
                   title={item.title}
                   subtitle={<span>by: {item.username}</span>}
                   actionIcon={
-                    <div style={{ display: "flex" }}>
+                    <div>
                       <FavoriteButton />
                       <IconButton
                         aria-label={`Copy url`}
@@ -122,7 +123,7 @@ export default function TitlebarImageList() {
         <div className={classes.pagination}>
           <Typography>Page: {page}</Typography>
           <Pagination
-            count={parseInt(totalCount / gifsPerRequest) - 6}
+            count={parseInt(totalCount / gifsPerRequest) - 10}
             page={page}
             onChange={handleChange}
           />
