@@ -5,13 +5,10 @@ import Pagination from "@material-ui/lab/Pagination";
 import ImageList from "@material-ui/core/ImageList";
 import ImageListItem from "@material-ui/core/ImageListItem";
 import ImageListItemBar from "@material-ui/core/ImageListItemBar";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import IconButton from "@material-ui/core/IconButton";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import { Box } from "@material-ui/core";
 import FavoriteButton from "./FavoriteButton";
 import { GiphyFetch } from "@giphy/js-fetch-api";
+import CopyUrlButton from "./CopyUrlButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -139,12 +136,10 @@ export default function GifContainer({ query }) {
                   actionIcon={
                     <div style={{ display: "flex" }}>
                       <FavoriteButton />
-                      <IconButton
-                        aria-label={`Copy url`}
-                        className={classes.icon}
-                      >
-                        <FileCopyIcon />
-                      </IconButton>
+                      <CopyUrlButton
+                        url={item.images.original.url}
+                        iconStyle={classes.icon}
+                      />
                     </div>
                   }
                 />
