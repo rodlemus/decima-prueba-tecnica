@@ -1,12 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "../pages/Dashboard";
+import { BrowserRouter } from "react-router-dom";
+import NavBar from "../components/Navbar";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-      </Routes>
+      <NavBar />
     </BrowserRouter>
   );
 }

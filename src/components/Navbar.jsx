@@ -1,11 +1,20 @@
-import { Search } from "@mui/icons-material";
-import { AppBar, InputBase, Toolbar, Typography, Badge } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import { alpha } from "@mui/material/styles";
-import { makeStyles } from "@mui/styles";
-import React, { useState } from "react";
-import { Box } from "@mui/system";
+import {
+  alpha,
+  AppBar,
+  InputBase,
+  makeStyles,
+  Toolbar,
+  Typography,
+  Grid,
+} from "@material-ui/core";
+import { Cancel, Search } from "@material-ui/icons";
 
+import { useState } from "react";
+import { Routes, Route, useMatch } from "react-router-dom";
+
+import Leftbar from "./Leftbar";
+import GifContainer from "./GifContainer";
+import SavedGifs from "../pages/SavedGifs";
 const useStyles = makeStyles((theme) => ({
   logoLg: {
     display: "none",
@@ -21,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbar: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
   },
   search: {
     display: "flex",
@@ -33,10 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
     width: "40%",
     [theme.breakpoints.down("sm")]: {
-      display: ({ open }) => {
-        const displayValue = open ? "flex" : "none";
-        return displayValue;
-      },
+      display: (props) => (props.open ? "flex" : "none"),
     },
   },
   input: {
@@ -44,56 +50,77 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
   },
   icons: {
-    display: "flex",
-    justifyContent: "center",
-
-    marginRight: theme.spacing(3),
+    alignItems: "center",
+    display: (props) => (props.open ? "none" : "flex"),
   },
   searchButton: {
     marginTop: "4%",
     marginRight: theme.spacing(2),
-   
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
+  },
+  cancel: {
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
   },
 }));
 
 const Navbar = (props) => {
-  const [open, setOpen] = useState(false);
+  const match = useMatch("/favorites");
+  const [open, setOpen] = useState(true);
+  const [query, setQuery] = useState("");
   const classes = useStyles({ open });
-
+  function handleChange(event) {
+    setQuery(event.target.value);
+  }
   return (
-    <AppBar>
-      <Toolbar className={classes.toolbar}>
-        <Typography variant="h6" className={classes.logoLg}>
-          Decima - Prueba Tecnica
-        </Typography>
-        <Typography variant="h6" className={classes.logoSm}>
-          Decima - PT
-        </Typography>
-        <div className={classes.search}>
-          <Search />
-          <InputBase placeholder="Search" className={classes.input} />
-        </div>
-       
-        <div className={classes.icons}>
-            <Box display={{ xs: 'block', md: 'none' }}>
-            <Search
-            className={classes.searchButton}
-            onClick={() => setOpen(!open)}
-          />
-            </Box>
+    <>
+      <AppBar position="fixed">
+        <Toolbar className={classes.toolbar}>
           <Typography variant="h6" className={classes.logoLg}>
-            Gifs Guardados
+            Decima - Prueba Tecnica
           </Typography>
-          <Badge badgeContent={4} color="secondary">
-            <FavoriteIcon
-              color="action"
-              style={{ color: "white" }}
-              fontSize="large"
+          <Typography variant="h6" className={classes.logoSm}>
+            Decima - PT
+          </Typography>
+          {!match && (
+            <div className={classes.search}>
+              <Search />
+              <InputBase
+                placeholder="Search"
+                className={classes.input}
+                onChange={handleChange}
+              />
+              <Cancel
+                className={classes.cancel}
+                onClick={() => setOpen(false)}
+              />
+            </div>
+          )}
+
+          <div className={classes.icons}>
+            <Search
+              onClick={() => setOpen(true)}
+              className={classes.searchButton}
             />
-          </Badge>
-        </div>
-      </Toolbar>
-    </AppBar>
+          </div>
+        </Toolbar>
+      </AppBar>
+      <Grid container style={{ padding: 0, margin: 0 }}>
+        <Grid item sm={2}>
+          <Leftbar />
+        </Grid>
+        <Grid item sm={10}>
+          <Routes>
+            <Route exact path="/" element={<GifContainer query={query} />} />
+            <Route path="/trending" element={<GifContainer query={query} />} />
+            <Route path="/favorites" element={<SavedGifs />} />
+          </Routes>
+        </Grid>
+      </Grid>
+    </>
   );
 };
 
