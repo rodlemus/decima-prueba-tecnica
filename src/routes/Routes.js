@@ -1,10 +1,10 @@
 import { BrowserRouter } from "react-router-dom";
-import Dashboard from "../pages/Dashboard";
+import NavBar from "../components/Navbar";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
-      <Dashboard />
+      <NavBar />
     </BrowserRouter>
   );
 }

@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     color: "rgba(255, 255, 255, 0.54)",
   },
   pagination: {
-    marginTop: "60%",
+    marginTop: "45%",
     marginLeft: "36%",
   },
   gifContainerItems: {
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TitlebarImageList() {
+export default function GifContainer({ query }) {
   const classes = useStyles();
   const [page, setPage] = useState(1);
   const [gifs, setGifs] = useState([]);
@@ -70,27 +70,59 @@ export default function TitlebarImageList() {
   useEffect(() => {
     const factor = page === 1 ? page - 1 : page;
     const offset = factor * gifsPerRequest;
-    gf.trending({ offset, limit: gifsPerRequest })
-      .then(({ data, pagination }) => {
-        console.log(pagination);
-        setTotalCount(pagination.total_count);
-        setGifs(data);
+    if (query !== "") {
+      gf.search(query, {
+        sort: "relevant",
+        lang: "es",
+        limit: gifsPerRequest,
+        type: "gifs",
+        offset,
       })
-      .catch(console.log);
-  }, []);
+        .then(({ data, pagination }) => {
+          console.log(data);
+          setTotalCount(pagination.total_count);
+          setGifs(data);
+        })
+        .catch(console.log);
+    } else {
+      gf.trending({ offset, limit: gifsPerRequest })
+        .then(({ data, pagination }) => {
+          console.log(pagination);
+          setTotalCount(pagination.total_count);
+          setGifs(data);
+        })
+        .catch(console.log);
+    }
+  }, [query]);
 
   const handleChange = (event, value) => {
     setPage(value);
 
     const offset = value === 1 ? 0 : value * gifsPerRequest;
     console.log(offset);
-    gf.trending({ offset, limit: gifsPerRequest })
-      .then(({ data, pagination }) => {
-        console.log(pagination);
-        setTotalCount(pagination.total_count);
-        setGifs(data);
+    if (query !== "") {
+      gf.search(query, {
+        sort: "relevant",
+        lang: "es",
+        limit: gifsPerRequest,
+        type: "gifs",
+        offset,
       })
-      .catch(console.log);
+        .then(({ data, pagination }) => {
+          console.log(pagination);
+          setTotalCount(pagination.total_count);
+          setGifs(data);
+        })
+        .catch(console.log);
+    } else {
+      gf.trending({ offset, limit: gifsPerRequest }).then(
+        ({ data, pagination }) => {
+          console.log(pagination);
+          setTotalCount(pagination.total_count);
+          setGifs(data);
+        }
+      );
+    }
   };
   return (
     <>
@@ -105,7 +137,7 @@ export default function TitlebarImageList() {
                   title={item.title}
                   subtitle={<span>by: {item.username}</span>}
                   actionIcon={
-                    <div>
+                    <div style={{ display: "flex" }}>
                       <FavoriteButton />
                       <IconButton
                         aria-label={`Copy url`}
